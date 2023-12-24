@@ -3,7 +3,12 @@ import styles from "./HistoryScreen.module.css";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbar,
+  gridFilteredSortedRowIdsSelector,
+  selectedGridRowsSelector,
+} from "@mui/x-data-grid";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -137,6 +142,15 @@ function CustomNoRowsOverlay() {
   );
 }
 
+const getSelectedRowsToExport = ({ apiRef }) => {
+  const selectedRowIds = selectedGridRowsSelector(apiRef);
+  if (selectedRowIds.size > 0) {
+    return Array.from(selectedRowIds.keys());
+  }
+
+  return gridFilteredSortedRowIdsSelector(apiRef);
+};
+
 const HistoryScreen = () => {
   const navigate = useNavigate();
 
@@ -234,13 +248,14 @@ const HistoryScreen = () => {
             toolbar: {
               showQuickFilter: true,
               quickFilterProps: { debounceMs: 500 },
+              printOptions: { getRowsToExport: getSelectedRowsToExport },
             },
           }}
-          onSelectionModelChange={(newSelectionModel) => {
+          onRowSelectionModelChange={(newSelectionModel) => {
             console.log(`SelectionModelChange: ${newSelectionModel}`);
             setSelectionModel(newSelectionModel);
           }}
-          selectionModel={selectionModel}
+          rowSelectionModel={selectionModel}
           onCellClick={(res) => {
             setCellValue(res.formattedValue);
           }}
@@ -286,10 +301,10 @@ const HistoryScreen = () => {
             size="large"
             endIcon={<DeleteIcon />}
             loading={loading}
-            // onClick={() => {
-            //   deletefn();
-            //   getDocs();
-            // }}
+            onClick={() => {
+              deletefn();
+              getDocs();
+            }}
           >
             Delete Record(s)
           </LoadingButton>
