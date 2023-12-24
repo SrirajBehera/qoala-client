@@ -158,7 +158,6 @@ const HistoryScreen = () => {
 
   const token = localStorage.getItem("@jwt-token");
 
-  const [pageSize, setPageSize] = useState(10);
   const [selectionModel, setSelectionModel] = useState([]);
   const [cellValue, setCellValue] = useState("");
   const [apiData, setApiData] = useState([]);
@@ -201,7 +200,6 @@ const HistoryScreen = () => {
         // setApiData(response.data.mydoc_data);
         setLoading(false);
         console.log("getDoc response: " + resp);
-        return resp;
       })
       .catch((err) => {
         setLoading(false);
@@ -264,10 +262,6 @@ const HistoryScreen = () => {
               error
             );
           });
-
-        // console.log(
-        //   "File in database after delete exists : " + fileRef.exists()
-        // );
 
         setLoading(false);
         console.log("getDoc response: " + imgURL);
@@ -366,11 +360,11 @@ const HistoryScreen = () => {
             size="large"
             endIcon={<EditIcon />}
             onClick={() => {
-              //   navigate("/editDoc", { state: { docid: selectionModel } });
-              getDoc(selectionModel);
+              navigate("/editdoc", { state: { docid: selectionModel } });
+              //   getDoc(selectionModel);
             }}
           >
-            Edit Doc Details
+            Edit Doc Detail(s)
           </Button>
           <LoadingButton
             variant="contained"

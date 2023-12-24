@@ -10,6 +10,7 @@ import DashboardScreen from "./screens/DashboardScreen/DashboardScreen";
 import HistoryScreen from "./screens/HistoryScreen/HistoryScreen";
 import ScannerScreen from "./screens/ScannerScreen/ScannerScreen";
 import { useSelector } from "react-redux";
+import EditDocumentScreen from "./screens/EditDocumentScreen/EditDocumentScreen";
 
 function App() {
   const token = localStorage.getItem("@jwt-token");
@@ -34,17 +35,18 @@ function App() {
         ) : (
           <Navigate to="/" replace />
         ),
-      // element: <DashboardScreen />
     },
     {
       path: "/history",
       element: token ? <HistoryScreen /> : <Navigate to="/" replace />,
-      // element: <HistoryScreen />
     },
     {
       path: "/scandoc",
       element: token ? <ScannerScreen /> : <Navigate to="/" replace />,
-      // element: <ScannerScreen />
+    },
+    {
+      path: "/editdoc",
+      element: token ? <EditDocumentScreen /> : <Navigate to="/" replace />,
     },
   ]);
 
