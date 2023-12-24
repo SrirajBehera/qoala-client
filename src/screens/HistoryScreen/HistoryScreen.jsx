@@ -17,6 +17,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoadingButton } from "@mui/lab";
 import moment from "moment/moment";
+import { storage } from "../../features/firebase";
+import { deleteObject, ref } from "firebase/storage";
 
 const columns = [
   {
@@ -186,21 +188,93 @@ const HistoryScreen = () => {
       });
   };
 
-  const deleteDoc = (docid) => {
+  const getDoc = (docid) => {
     setLoading(true);
     axios
-      .delete(import.meta.env.VITE_PROD_URL + `deletedoc/${docid}`, {
+      .get(import.meta.env.VITE_PROD_URL + `mydocs/${docid}`, {
         headers: {
           Authorization: "Bearer " + token,
         },
       })
       .then((response) => {
+        const resp = JSON.stringify(response.data.mydoc_data);
+        // setApiData(response.data.mydoc_data);
         setLoading(false);
-        console.log("deletedoc api response: " + JSON.stringify(response.data));
+        console.log("getDoc response: " + resp);
+        return resp;
       })
       .catch((err) => {
         setLoading(false);
-        console.error("deletedoc api error: " + err);
+        console.error("Error getDoc response: ", err);
+      });
+  };
+
+  const deleteDoc = (docid) => {
+    setLoading(true);
+    // delete image from Firebase
+    axios
+      .get(import.meta.env.VITE_PROD_URL + `mydocs/${docid}`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((response) => {
+        const imgURL = JSON.stringify(response.data.mydoc_data.image_link);
+        const pattern = /\/files%2F([^\/?]+)\?/;
+        const match = pattern.exec(imgURL);
+        const filename = match ? match[1] : null;
+
+        const fileRef = ref(
+          storage,
+          `gs://${
+            import.meta.env.VITE_FIREBASE_STORAGE_BUCKET
+          }/files/${filename}`
+        );
+
+        // Delete the file using the delete() method
+        deleteObject(fileRef)
+          .then(function () {
+            // File deleted successfully
+            console.log(
+              "File Deleted successfully from firebase, now deleting record from DB"
+            );
+            // deleting the record from the database
+            axios
+              .delete(import.meta.env.VITE_PROD_URL + `deletedoc/${docid}`, {
+                headers: {
+                  Authorization: "Bearer " + token,
+                },
+              })
+              .then((response) => {
+                setLoading(false);
+                console.log(
+                  "deletedoc api response: " + JSON.stringify(response.data)
+                );
+              })
+              .catch((err) => {
+                setLoading(false);
+                console.error("deletedoc api error: " + err);
+              });
+          })
+          .catch(function (error) {
+            // Some Error occurred
+            setLoading(false);
+            console.log(
+              "Some Error occurred while deleting from storage: ",
+              error
+            );
+          });
+
+        // console.log(
+        //   "File in database after delete exists : " + fileRef.exists()
+        // );
+
+        setLoading(false);
+        console.log("getDoc response: " + imgURL);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.error("Error getDoc response: ", err);
       });
   };
 
@@ -208,8 +282,9 @@ const HistoryScreen = () => {
     selectionModel.forEach((id) => {
       setTimeout(() => {
         deleteDoc(id);
-      }, 500);
+      }, 1000);
     });
+    getDocs();
   };
 
   const rows = apiData.map((data) => ({
@@ -290,9 +365,10 @@ const HistoryScreen = () => {
             variant="contained"
             size="large"
             endIcon={<EditIcon />}
-            // onClick={() => {
-            //   navigate("/editDoc", { state: { docid: selectionModel } });
-            // }}
+            onClick={() => {
+              //   navigate("/editDoc", { state: { docid: selectionModel } });
+              getDoc(selectionModel);
+            }}
           >
             Edit Doc Details
           </Button>
@@ -303,7 +379,6 @@ const HistoryScreen = () => {
             loading={loading}
             onClick={() => {
               deletefn();
-              getDocs();
             }}
           >
             Delete Record(s)
