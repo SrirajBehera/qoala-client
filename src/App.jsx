@@ -4,6 +4,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RegisterScreen from "./screens/RegisterScreen/RegisterScreen";
 import DashboardScreen from "./screens/DashboardScreen/DashboardScreen";
 import HistoryScreen from "./screens/HistoryScreen/HistoryScreen";
+import ScannerScreen from "./screens/ScannerScreen/ScannerScreen";
 
 function App() {
   const router = createBrowserRouter([
@@ -24,6 +25,11 @@ function App() {
       path: "/history",
       // element: token ? <FeedScreen /> : <Navigate to="/" replace />,
       element: <HistoryScreen />
+    },
+    {
+      path: "/scandoc",
+      // element: token ? <FeedScreen /> : <Navigate to="/" replace />,
+      element: <ScannerScreen />
     },
   ]);
 

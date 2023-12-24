@@ -55,7 +55,7 @@ const DashboardScreen = () => {
             dispatch(logOut());
             localStorage.removeItem("@jwt-token");
             localStorage.removeItem("@user-details");
-            navigate("/login", { replace: true });
+            navigate("/", { replace: true });
           }}
         >
           Logout
