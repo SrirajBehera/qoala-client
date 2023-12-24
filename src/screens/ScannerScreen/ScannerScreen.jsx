@@ -6,6 +6,9 @@ import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import styles from "./ScannerScreen.module.css";
 import ReactJson from "@microlink/react-json-view";
+import axios from "axios";
+import DoneIcon from "@mui/icons-material/Done";
+import { LoadingButton } from "@mui/lab";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -94,7 +97,7 @@ const ScannerScreen = () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           console.log("File available at", downloadURL);
           setImgUrl(downloadURL);
-          //   runOCR();
+          runOCR(downloadURL);
         });
       }
     );
@@ -102,18 +105,18 @@ const ScannerScreen = () => {
 
   const token = localStorage.getItem("@jwt-token");
 
-  const link_data = {
-    image_link: imgUrl,
-  };
-
-  const runOCR = async () => {
+  const runOCR = async (imgUrl) => {
     setLoading(true);
     await axios
-      .post(import.meta.env.VITE_PROD_URL + "createdoc", link_data, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
+      .post(
+        import.meta.env.VITE_PROD_URL + "createdoc",
+        { image_link: imgUrl },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      )
       .then((response) => {
         const resp = JSON.stringify(response.data.document);
         setApiOCRData(response.data.document);
@@ -166,9 +169,14 @@ const ScannerScreen = () => {
                 accept="image/png, image/jpg, image/jpeg"
               />
             </Button>
-            <Button variant="contained" type="submit">
+            <LoadingButton
+              variant="contained"
+              endIcon={<DoneIcon />}
+              loading={loading}
+              type="submit"
+            >
               Submit
-            </Button>
+            </LoadingButton>
           </form>
           {!imgUrl && (
             <div className="outerbar">

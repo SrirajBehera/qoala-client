@@ -13,87 +13,57 @@ import axios from "axios";
 import { LoadingButton } from "@mui/lab";
 import moment from "moment/moment";
 
-// const columns = [
-//   {
-//     field: 'id',
-//     headerName: 'ID',
-//     width: 220
-//   },
-//   {
-//     field: 'bookName',
-//     headerName: 'Book Name',
-//     width: 150,
-//   },
-//   {
-//     field: 'bookAuthor',
-//     headerName: 'Book Author(s)',
-//     width: 250,
-//   },
-//   {
-//     field: 'edition',
-//     headerName: 'Edition',
-//     width: 110,
-//   },
-//   {
-//     field: 'publicationYear',
-//     headerName: 'Year of publication',
-//     width: 150,
-//   },
-//   {
-//     field: 'quantity',
-//     headerName: 'Quantity',
-//     width: 110,
-//   },
-//   {
-//     field: 'price',
-//     headerName: 'Price',
-//     width: 110,
-//   }
-// ];
-
 const columns = [
-  { field: "id", headerName: "ID", width: 90 },
   {
-    field: "firstName",
-    headerName: "First name",
+    field: "idNumber",
+    headerName: "ID Number",
     width: 150,
-    editable: true,
+  },
+  {
+    field: "name",
+    headerName: "Name",
+    width: 150,
   },
   {
     field: "lastName",
-    headerName: "Last name",
-    width: 150,
-    editable: true,
+    headerName: "Last Name",
+    width: 100,
   },
   {
-    field: "age",
-    headerName: "Age",
-    type: "number",
+    field: "dob",
+    headerName: "Date of Birth",
     width: 110,
-    editable: true,
   },
   {
-    field: "fullName",
-    headerName: "Full name",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 160,
-    valueGetter: (params) =>
-      `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+    field: "issueDate",
+    headerName: "Date of Issue",
+    width: 110,
   },
-];
-
-const rows = [
-  { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-  { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  { id: 10, lastName: "Roxie", firstName: "Harvey", age: 65 },
+  {
+    field: "expiryDate",
+    headerName: "Date of Expiry",
+    width: 110,
+  },
+  {
+    field: "percentageSuccess",
+    headerName: "Success %",
+    width: 110,
+  },
+  {
+    field: "rawData",
+    headerName: "Raw Data",
+    width: 110,
+  },
+  {
+    field: "imgLink",
+    headerName: "Image Link",
+    width: 110,
+  },
+  {
+    field: "id",
+    headerName: "DB id",
+    width: 110,
+  },
 ];
 
 const StyledGridOverlay = styled("div")(({ theme }) => ({
@@ -191,8 +161,8 @@ const HistoryScreen = () => {
         },
       })
       .then((response) => {
-        const resp = JSON.stringify(response.data);
-        setApiData(response.data);
+        const resp = JSON.stringify(response.data.docs);
+        setApiData(response.data.docs);
         setLoading(false);
         console.log("getDocs response: " + resp);
       })
@@ -212,9 +182,7 @@ const HistoryScreen = () => {
       })
       .then((response) => {
         setLoading(false);
-        console.log(
-          "deletedoc api response: " + JSON.stringify(response.data)
-        );
+        console.log("deletedoc api response: " + JSON.stringify(response.data));
       })
       .catch((err) => {
         setLoading(false);
@@ -230,19 +198,22 @@ const HistoryScreen = () => {
     });
   };
 
-  //   const rows = apiData.map((data) => ({
-  //     id: data._id,
-  //     bookName: data.name,
-  //     bookAuthor: data.author,
-  //     edition: data.edition,
-  //     publicationYear: moment(data.publication_year).format("YYYY"),
-  //     quantity: data.quantity,
-  //     price: data.price,
-  //   }));
+  const rows = apiData.map((data) => ({
+    idNumber: data.identification_number,
+    name: data.name,
+    lastName: data.last_name,
+    dob: data.date_of_birth,
+    issueDate: data.date_of_issue,
+    expiryDate: data.date_of_expiry,
+    percentageSuccess: data.success_level,
+    rawData: data.raw_ocr_data,
+    imgLink: data.image_link,
+    id: data._id,
+  }));
 
-  //   useEffect(() => {
-  //     getDocs();
-  //   }, []);
+  useEffect(() => {
+    getDocs();
+  }, []);
 
   return (
     <div className={styles.inventory}>
@@ -251,10 +222,7 @@ const HistoryScreen = () => {
           sx={{ border: "1px solid black", borderRadius: "12px", mt: 3, mr: 3 }}
           rows={rows}
           columns={columns}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[15, 25, 35]}
-          pagination
+          pageSizeOptions={[10, 20, 30]}
           checkboxSelection
           disableSelectionOnClick
           disableRowSelectionOnClick
@@ -265,7 +233,7 @@ const HistoryScreen = () => {
           slotProps={{
             toolbar: {
               showQuickFilter: true,
-              quickFilterProps: { debounceMs: 500 }
+              quickFilterProps: { debounceMs: 500 },
             },
           }}
           onSelectionModelChange={(newSelectionModel) => {
@@ -297,9 +265,9 @@ const HistoryScreen = () => {
             size="large"
             endIcon={<RefreshIcon />}
             loading={loading}
-            // onClick={() => {
-            //   getDocs();
-            // }}
+            onClick={() => {
+              getDocs();
+            }}
           >
             Refresh
           </LoadingButton>
