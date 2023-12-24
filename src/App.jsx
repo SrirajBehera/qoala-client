@@ -3,6 +3,7 @@ import LoginScreen from "./screens/LoginScreen/LoginScreen";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RegisterScreen from "./screens/RegisterScreen/RegisterScreen";
 import DashboardScreen from "./screens/DashboardScreen/DashboardScreen";
+import HistoryScreen from "./screens/HistoryScreen/HistoryScreen";
 
 function App() {
   const router = createBrowserRouter([
@@ -18,6 +19,11 @@ function App() {
       path: "/dashboard",
       // element: token ? <FeedScreen /> : <Navigate to="/" replace />,
       element: <DashboardScreen />
+    },
+    {
+      path: "/history",
+      // element: token ? <FeedScreen /> : <Navigate to="/" replace />,
+      element: <HistoryScreen />
     },
   ]);
 
