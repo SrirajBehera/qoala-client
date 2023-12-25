@@ -223,11 +223,11 @@ const ScannerScreen = () => {
               Start OCR
             </LoadingButton>
           </form>
-          {!imgUrl && (
+          {/* {!imgUrl && (
             <div className="outerbar">
               <div className="innerbar">{progresspercent}% uploaded</div>
             </div>
-          )}
+          )} */}
           {imgUrl && <img src={imgUrl} alt="uploaded file" height={200} />}
         </div>
         <div className={styles.right}>
