@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./RegisterScreen.module.css";
+import login_illustration from "../../assets/landingImg.png";
 import {
   FormControl,
   IconButton,
@@ -80,75 +81,90 @@ const RegisterScreen = () => {
 
   return (
     <div className={styles.container}>
-      <span className={styles.header}>User Registration</span>
-      <div className={styles.formContainer}>
-        <TextField
-          id="outlined-basic"
-          fullWidth
-          margin="normal"
-          label="Name"
-          variant="outlined"
-          value={name}
-          onChange={(res) => setName(res.target.value)}
-        />
-        <TextField
-          id="outlined-basic"
-          fullWidth
-          margin="normal"
-          label="Email Address"
-          variant="outlined"
-          value={email}
-          onChange={(res) => setEmail(res.target.value)}
-          error={isValidEmail}
-        />
-        <FormControl fullWidth variant="outlined" margin="normal">
-          <InputLabel htmlFor="outlined-adornment-password">
-            Password
-          </InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(res) => setPassword(res.target.value)}
+      <div className={styles.right_section}>
+        <span className={styles.back}>
+          <span>S</span>
+          <span>c</span>
+          <span>a</span>
+          <span>n</span>
+          <span>-</span>
+          <span>T</span>
+          <span>h</span>
+          <span>a</span>
+          <span>i</span>
+        </span>
+        <h2 className={styles.underline_effect}>User Registration</h2>
+        <div className={styles.form}>
+          <TextField
+            fullWidth
             required
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={(event) => event.preventDefault()}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
+            id="outlined-basic1"
+            label="Full Name"
+            variant="outlined"
+            value={name}
+            onChange={(res) => setName(res.target.value)}
           />
-        </FormControl>
-        <LoadingButton
-          onClick={() => {
-            if (isFormValid()) {
-              createUser();
-            } else {
-              setIsValid(true);
-            }
-          }}
-          endIcon={<LoginIcon />}
-          loading={loading}
-          loadingPosition="end"
-          variant="contained"
-          size="large"
-          type="submit"
-        >
-          <span>Register</span>
-        </LoadingButton>
+          <TextField
+            fullWidth
+            required
+            id="outlined-basic2"
+            label="Email Address"
+            variant="outlined"
+            value={email}
+            onChange={(res) => setEmail(res.target.value)}
+            error={isValidEmail}
+          />
+          <FormControl fullWidth variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-password">
+              Password
+            </InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(res) => setPassword(res.target.value)}
+              required
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={(event) => event.preventDefault()}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+            />
+          </FormControl>
+          <LoadingButton
+            onClick={() => {
+              if (isFormValid()) {
+                createUser();
+              } else {
+                setIsValid(true);
+              }
+            }}
+            endIcon={<LoginIcon />}
+            loading={loading}
+            loadingPosition="end"
+            variant="contained"
+            type="submit"
+          >
+            <span>Register</span>
+          </LoadingButton>
+        </div>
+        <div className={styles.no_account}>
+          <h4>
+            <Link to="/">Already registered? Login now!</Link>
+          </h4>
+        </div>
       </div>
-      <h4>
-        <Link to="/">
-          <span>Already Registered? Login now!</span>
-        </Link>
-      </h4>
+      <div className={styles.left_section}>
+        <img src={login_illustration} alt="" className={styles.left_img} />
+      </div>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./LoginScreen.module.css";
+import login_illustration from "../../assets/landingImg.png";
 import {
   FormControl,
   IconButton,
@@ -85,66 +86,81 @@ const LoginScreen = () => {
 
   return (
     <div className={styles.container}>
-      <span className={styles.header}>User Login</span>
-      <div className={styles.formContainer}>
-        <TextField
-          id="outlined-basic"
-          fullWidth
-          margin="normal"
-          label="Email Address"
-          variant="outlined"
-          value={email}
-          onChange={(res) => setEmail(res.target.value)}
-          error={isValidEmail}
-        />
-        <FormControl fullWidth variant="outlined" margin="normal">
-          <InputLabel htmlFor="outlined-adornment-password">
-            Password
-          </InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(res) => setPassword(res.target.value)}
-            required
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={(event) => event.preventDefault()}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
-          />
-        </FormControl>
-        <LoadingButton
-          onClick={() => {
-            if (isFormValid()) {
-              loginUser();
-            } else {
-              setIsValid(true);
-            }
-          }}
-          endIcon={<LoginIcon />}
-          loading={loading}
-          loadingPosition="end"
-          variant="contained"
-          size="large"
-          type="submit"
-        >
-          <span>Login</span>
-        </LoadingButton>
+      <div className={styles.left_section}>
+        <img src={login_illustration} alt="" className={styles.left_img} />
       </div>
-      <h4>
-        <Link to="/register">
-          <span>Don't have an account? Register now!</span>
-        </Link>
-      </h4>
+      <div className={styles.right_section}>
+        <span className={styles.back}>
+          <span>S</span>
+          <span>c</span>
+          <span>a</span>
+          <span>n</span>
+          <span>-</span>
+          <span>T</span>
+          <span>h</span>
+          <span>a</span>
+          <span>i</span>
+        </span>
+        <h2 className={styles.underline_effect}>User Log-in</h2>
+        <form className={styles.form}>
+          <TextField
+            fullWidth
+            required
+            id="outlined-basic"
+            label="Email Address"
+            variant="outlined"
+            value={email}
+            onChange={(res) => setEmail(res.target.value)}
+            error={isValidEmail}
+          />
+          <FormControl fullWidth variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-password">
+              Password
+            </InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              value={password}
+              onChange={(res) => setPassword(res.target.value)}
+              type={showPassword ? "text" : "password"}
+              required
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={(event) => event.preventDefault()}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+            />
+          </FormControl>
+          <LoadingButton
+            onClick={() => {
+              if (isFormValid()) {
+                loginUser();
+              } else {
+                setIsValid(true);
+              }
+            }}
+            endIcon={<LoginIcon />}
+            loading={loading}
+            loadingPosition="end"
+            variant="contained"
+            type="submit"
+          >
+            <span>Login</span>
+          </LoadingButton>
+        </form>
+        <div className={styles.no_account}>
+          <h4>
+            <Link to="/register">Don't have an account? Register now!</Link>
+          </h4>
+        </div>
+      </div>
     </div>
   );
 };
