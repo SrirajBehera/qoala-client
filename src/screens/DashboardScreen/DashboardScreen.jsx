@@ -1,8 +1,8 @@
 import React from "react";
 import styles from "./DashboardScreen.module.css";
 import Button from "@mui/material/Button";
-import HistoryIcon from '@mui/icons-material/History';
-import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
+import HistoryIcon from "@mui/icons-material/History";
+import DocumentScannerIcon from "@mui/icons-material/DocumentScanner";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";

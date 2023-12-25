@@ -29,12 +29,7 @@ function App() {
     },
     {
       path: "/dashboard",
-      element:
-        state_token_val !== null || token ? (
-          <DashboardScreen />
-        ) : (
-          <Navigate to="/" replace />
-        ),
+      element: token ? <DashboardScreen /> : <Navigate to="/" replace />,
     },
     {
       path: "/history",

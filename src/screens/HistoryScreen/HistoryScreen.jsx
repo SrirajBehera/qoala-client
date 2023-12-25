@@ -13,12 +13,13 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoadingButton } from "@mui/lab";
-import moment from "moment/moment";
 import { storage } from "../../features/firebase";
 import { deleteObject, ref } from "firebase/storage";
+import { convertDateFormat } from "../../utils/formatting";
+import moment from "moment";
 
 const columns = [
   {
@@ -54,7 +55,7 @@ const columns = [
   {
     field: "percentageSuccess",
     headerName: "Success %",
-    width: 110,
+    width: 100,
   },
   {
     field: "rawData",
@@ -65,6 +66,16 @@ const columns = [
     field: "imgLink",
     headerName: "Image Link",
     width: 110,
+  },
+  {
+    field: "createdAt",
+    headerName: "Created At",
+    width: 250,
+  },
+  {
+    field: "updatedAt",
+    headerName: "Updated At",
+    width: 250,
   },
   {
     field: "id",
@@ -285,12 +296,23 @@ const HistoryScreen = () => {
     idNumber: data.identification_number,
     name: data.name,
     lastName: data.last_name,
-    dob: data.date_of_birth,
-    issueDate: data.date_of_issue,
-    expiryDate: data.date_of_expiry,
-    percentageSuccess: data.success_level,
+    dob:
+      data.date_of_birth !== "Not found"
+        ? convertDateFormat(data.date_of_birth)
+        : data.date_of_birth,
+    issueDate:
+      data.date_of_issue !== "Not found"
+        ? convertDateFormat(data.date_of_issue)
+        : data.date_of_issue,
+    expiryDate:
+      data.date_of_expiry !== "Not found"
+        ? convertDateFormat(data.date_of_expiry)
+        : data.date_of_expiry,
+    percentageSuccess: parseFloat(data.success_level).toFixed(2),
     rawData: data.raw_ocr_data,
     imgLink: data.image_link,
+    createdAt: moment(data.created_at).format('MMMM Do YYYY, h:mm:ss a'),
+    updatedAt: moment(data.updated_at).format('MMMM Do YYYY, h:mm:ss a'),
     id: data._id,
   }));
 
@@ -305,6 +327,9 @@ const HistoryScreen = () => {
           sx={{ border: "1px solid black", borderRadius: "12px", mt: 3, mr: 3 }}
           rows={rows}
           columns={columns}
+          initialState={{
+            pagination: { paginationModel: { pageSize: 10 } },
+          }}
           pageSizeOptions={[10, 20, 30]}
           checkboxSelection
           disableSelectionOnClick
@@ -361,7 +386,6 @@ const HistoryScreen = () => {
             endIcon={<EditIcon />}
             onClick={() => {
               navigate("/editdoc", { state: { docid: selectionModel } });
-              //   getDoc(selectionModel);
             }}
           >
             Edit Doc Detail(s)

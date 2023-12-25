@@ -9,6 +9,9 @@ import ReactJson from "@microlink/react-json-view";
 import axios from "axios";
 import DoneIcon from "@mui/icons-material/Done";
 import { LoadingButton } from "@mui/lab";
+import { convertDateFormat } from "../../utils/formatting";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { useNavigate } from "react-router-dom";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -23,6 +26,8 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const ScannerScreen = () => {
+  const navigate = useNavigate();
+
   const [imgUrl, setImgUrl] = useState(null);
   const [progresspercent, setProgresspercent] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -119,7 +124,24 @@ const ScannerScreen = () => {
       )
       .then((response) => {
         const resp = JSON.stringify(response.data.document);
-        setApiOCRData(response.data.document);
+        const extractedData = {
+          identification_number: response.data.document.identification_number,
+          name: response.data.document.name,
+          last_name: response.data.document.last_name,
+          "date-of-birth":
+            response.data.document.date_of_birth !== "Not found"
+              ? convertDateFormat(response.data.document.date_of_birth)
+              : response.data.document.date_of_birth,
+          "date-of-issue":
+            response.data.document.date_of_issue !== "Not found"
+              ? convertDateFormat(response.data.document.date_of_issue)
+              : response.data.document.date_of_issue,
+          "date-of-expiry":
+            response.data.document.date_of_expiry !== "Not found"
+              ? convertDateFormat(response.data.document.date_of_expiry)
+              : response.data.document.date_of_expiry,
+        };
+        setApiOCRData(extractedData);
         setLoading(false);
         console.log("runOCR response: " + resp);
       })
@@ -152,10 +174,10 @@ const ScannerScreen = () => {
         <span>a</span>
         <span>i</span>
       </span>
-      <h3 className={styles.underline_effect}>Scan your ID Card through OCR</h3>
+      <h3 className={styles.underline_effect}>Scan your Thailand National ID Card through OCR</h3>
       <div className={styles.subContainer}>
         <div className={styles.left}>
-          <span>Allowed images (PNG, JPEG, JPG) with a 2MB size limit</span>
+          <span>Allowed image (PNG, JPEG, JPG) with a 2MB size limit</span>
           <form onSubmit={handleSubmit} className={styles.form}>
             <Button
               component="label"
@@ -175,7 +197,7 @@ const ScannerScreen = () => {
               loading={loading}
               type="submit"
             >
-              Submit
+              Start OCR
             </LoadingButton>
           </form>
           {!imgUrl && (
@@ -191,6 +213,16 @@ const ScannerScreen = () => {
             src={apiOCRData ? apiOCRData : my_json_object}
             theme={"shapeshifter"}
           />
+          <br />
+          <Button
+            variant="contained"
+            endIcon={<ExitToAppIcon />}
+            onClick={() => {
+              navigate("/dashboard", { replace: true });
+            }}
+          >
+            Dashboard
+          </Button>
         </div>
       </div>
     </div>
