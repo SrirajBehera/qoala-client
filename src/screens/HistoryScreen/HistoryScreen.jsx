@@ -218,6 +218,9 @@ const HistoryScreen = () => {
       });
   };
 
+  const userDetails = localStorage.getItem("@user-details");
+  const userDBId = JSON.parse(userDetails)._id;
+
   const deleteDoc = (docid) => {
     setLoading(true);
     // delete image from Firebase
@@ -229,7 +232,7 @@ const HistoryScreen = () => {
       })
       .then((response) => {
         const imgURL = JSON.stringify(response.data.mydoc_data.image_link);
-        const pattern = /\/files%2F([^\/?]+)\?/;
+        const pattern = /%2F([^/?#]+)[^/]*$/;
         const match = pattern.exec(imgURL);
         const filename = match ? match[1] : null;
 
@@ -237,7 +240,7 @@ const HistoryScreen = () => {
           storage,
           `gs://${
             import.meta.env.VITE_FIREBASE_STORAGE_BUCKET
-          }/files/${filename}`
+          }/${userDBId}/${filename}`
         );
 
         // Delete the file using the delete() method
@@ -311,8 +314,8 @@ const HistoryScreen = () => {
     percentageSuccess: parseFloat(data.success_level).toFixed(2),
     rawData: data.raw_ocr_data,
     imgLink: data.image_link,
-    createdAt: moment(data.created_at).format('MMMM Do YYYY, h:mm:ss a'),
-    updatedAt: moment(data.updated_at).format('MMMM Do YYYY, h:mm:ss a'),
+    createdAt: moment(data.created_at).format("MMMM Do YYYY, h:mm:ss a"),
+    updatedAt: moment(data.updated_at).format("MMMM Do YYYY, h:mm:ss a"),
     id: data._id,
   }));
 

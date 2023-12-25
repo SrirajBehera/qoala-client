@@ -33,6 +33,9 @@ const ScannerScreen = () => {
   const [loading, setLoading] = useState(false);
   const [apiOCRData, setApiOCRData] = useState(null);
 
+  const userDetails = localStorage.getItem("@user-details");
+  const userDBId = JSON.parse(userDetails)._id;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const file = e.target[0]?.files[0];
@@ -52,7 +55,7 @@ const ScannerScreen = () => {
     // Upload file and metadata to the object 'images/mountains.jpg'
     // const storageRef = ref(storage, "images/" + file.name);
     // const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-    const storageRef = ref(storage, `files/${file.name}`);
+    const storageRef = ref(storage, `${userDBId}/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     // Listen for state changes, errors, and completion of the upload.
